@@ -1,0 +1,27 @@
+body{
+    color: #FF2c2c;
+    background: gold;
+    font-size: small;
+    font-weight: 800 /*字粗度*/
+}
+
+td{
+    color: blue;
+    font-size: 2em;
+/*    em是參考上一個層級, rem是參考body的大小   數字是指參考對象的幾倍大*/
+}
+
+div{
+    border: 1px solid green;
+    text-align: center;
+    letter-spacing: 1em;
+    line-height:  3em;
+}
+
+.major{
+    background-color: green;
+    color: black;
+}
+#taipei{
+     background-color: yellow;
+}
