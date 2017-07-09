@@ -23,5 +23,8 @@ div{
     color: black;
 }
 #taipei{
-     background-color: yellow;
+     background-color: yellow !important;
 }
+/*!important 是提高優先權到最高的意思*/
+
+
