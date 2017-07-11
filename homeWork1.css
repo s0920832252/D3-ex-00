@@ -1,0 +1,63 @@
+body{
+    background: rgb(160,160,160);
+ 
+}
+h1{
+    font-size: 50px;
+    font-family: 微軟正黑體;
+}
+.註解{
+    font-size: 19px;
+    background: red;
+    color:#7b6391;
+}
+.title{
+    font-size: 27px;
+    font-weight: 550;
+    color: #622a96;
+}
+
+.introduction{
+    font-size: 35px;
+    font-family: 標楷體
+}
+.第一份作業css{
+    color: blueviolet;
+    letter-spacing: 1em;
+}
+
+.第一份作業css .例外{
+    color: skyblue;
+    letter-spacing: 0em;
+}
+
+blockquote{
+    background: black;
+    color: white;
+}
+p{
+    background: rgb(135,35,66);
+}
+strong{
+    font-size: 17px;
+    font-weight: bold;
+}
+hr{
+    height:20px;border:none;border-top:20px groove yellow;
+/*    height:1px;border:none;border-top:1px dashed #0066CC;*/
+/*    height:5px;border:none;border-top:5px ridge green;*/
+}
+
+
+table{
+    padding: 5px 5px;
+    margin: auto;
+    border-style:ridge;/*設定邊線為凸線*/
+    background: rgba(209,214,15,0.29);
+    text-align: center;/*文字置中*/
+    font-size: 15px;
+    
+}
+table h1 {
+    font-size: 25px
+}
