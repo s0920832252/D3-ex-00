@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!--    <script src="d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="scripe20170715.js"></script>
+    <style>
+        #svg2 {
+            position: absolute;
+            left: 3%;
+            top: 15px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- 用html 的 svg標籤畫 音符符號 -->
+    <svg width=300 height="200" id=svg1>
+        <circle cx="150" cy="120" r="15"></circle>
+        <rect x="160" y="45" width="5" height="78"></rect>
+    </svg>
+
+    <script>
+        d3.select("body").append("svg").attr({
+            width: 300,
+            height: 200,
+            id: "svg2"
+        })
+        var svg2 = d3.select("#svg2");
+
+        svg2.append("circle").attr({
+            cx: 150,
+            cy: 120,
+            r: 15
+        });
+
+        svg2.append("rect").attr({
+            x: 160,
+            y: 45,
+            width: 5,
+            height: 78,
+            fill: "red"
+        });
+
+        d3.select("body").append("svg").attr({
+            width: 800,
+            height: 600,
+            id: "svg3",
+        })
+
+        var svg3 = d3.select("#svg3");
+
+        var points = "";
+
+        for (var i = 0; i < 20; i = i + 1) {
+            var ran = randNumber(20, 300);
+
+            points = points + " " + (10 + ran) + "," + (10 + 15 * i);
+
+            svg3.append("circle").attr({
+                cx: 10 + ran,
+                cy: 10 + 15 * i,
+                r: 5,
+                fill: "rgb(" + (255 - i * 10) + ", " + (i * 10) + ", 0)"
+            });
+            svg3.append("text").attr({
+                x: ran + 5,
+                y: 20 + 15 * i,
+                "font-size": "11px",
+                fill: "black",
+                "text-anchor": "end",
+            }).text(ran);
+
+        }
+
+        points = points + " 10,315";
+        svg3.append("polyline").attr({
+            points: points,
+            stroke: "black",
+            fill: "rgba(0,0,0,0)",
+        });
+
+    </script>
+
+
+</body>
+
+</html>

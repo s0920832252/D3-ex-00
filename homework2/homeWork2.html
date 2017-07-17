@@ -4,12 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>homeWork2作業</title>
-    <script src="../d3.min.js"></script>
+    <!--    <script src="../d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="homeWork2.js"></script>
     <link rel="stylesheet" href="homeWork2.css">
 </head>
 
 <body>
+
+    <div>
+        <p class="title">第二次作業</p>
+        <p> 學生 : 陳世承</p>
+    </div>
+
+    <hr>
+
+    <p class="title">例題1 : 產生個介於 1911~2016之間的數字</p>
 
     <table>
         <thead>
@@ -40,6 +50,152 @@
             </tr>
         </tfoot>
     </table>
+
+    <hr>
+
+    <!--    <svg width="250" height="85" id="svg1"></svg>-->
+
+    <script>
+        d3.select("body").append("svg").attr({
+            width: 500,
+            height: 210,
+            id: "svg1",
+        });
+
+        var svg1 = d3.select("#svg1");
+
+        var strTitle = "例題2 : 用D3畫出五線譜和音符,每次結果不同";
+        svg1.append("rect").attr({
+            x: 25,
+            y: 15,
+            width: 450,
+            height: 37,
+        });
+        svg1.append("text").attr({
+            x: 250,
+            y: 40,
+            "font-size": "20px",
+            fill: "white",
+            "text-anchor": "middle",
+        }).text(strTitle);
+
+
+        for (i = 0; i < 5; i = i + 1) {
+            svg1.append("line").attr({
+                x1: 10,
+                y1: 100 + i * 15,
+                x2: 500,
+                y2: 100 + i * 15,
+                stroke: "black",
+                "stroke-width": 2,
+            });
+        }
+
+        strArr = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N"];
+        for (i = 0; i < 13; i = i + 1) {
+            var ran = Math.floor(Math.random() * 6 - 3);
+            svg1.append("circle").attr({
+                cx: 45 + i * 35,
+                cy: 138 + ran * 15,
+                r: 7.5
+            });
+            svg1.append("rect").attr({
+                x: 45 + i * 35,
+                y: 100 + ran * 15,
+                width: 5,
+                height: 40
+            });
+            svg1.append("text").attr({
+                x: 40 + i * 35,
+                y: 157 + ran * 15,
+                "font-size": "12px",
+                fill: "rgb(" + (255 - i * 18) + ",40," + (i * 18) + ")",
+                "text-anchor": "start",
+            }).text(strArr[i]);
+        }
+
+    </script>
+
+    <hr>
+
+    <script>
+        d3.select("body").append("svg").attr({
+            width: 500,
+            height: 250,
+            id: "svg2",
+        });
+
+        var svg2 = d3.select("#svg2");
+        var strTitle2 = "例題3 : 用D3畫長條圖,每次結果不同";
+
+        D3Title(svg2, strTitle2, 25, 15);
+
+
+        for (i = 0; i < 10; i = i + 1) {
+            var ran2 = Math.floor(Math.random() * (300 - 55) + 55);
+
+            svg2.append("rect").attr({
+                x: 10,
+                y: 80 + (i * 15),
+                width: ran2 + 45,
+                height: 10,
+                fill: "rgb(" + (ran2 - 45) + ", " + (255 - 26 * i) + "," + i * 26 + ")",
+            })
+
+            svg2.append("text").attr({
+                x: ran2 + 50,
+                y: 90 + (i * 15),
+                "font-size": 11,
+                fill: "white",
+                "text-anchor": "end",
+            }).text(ran2);
+        };
+
+    </script>
+
+    <hr>
+
+    <script>
+        d3.select("body").append("svg").attr({
+            width: 520,
+            height: 400,
+            id: "svg3",
+        })
+
+        var svg3 = d3.select("#svg3");
+        var strTitle3 = "例題4 : 用D3畫折線圖,每次結果不同";
+        D3Title(svg3, strTitle3, 25, 15);
+
+        var points = "0,80";
+        for (var i = 0; i < 20; i = i + 1) {
+            var ran3 = Math.floor(Math.random() * 460 + 20);
+            var colorNum = Math.floor(Math.random() * 255 + 1);
+
+            points = points + " " + ran3 + "," + (i * 12 + 100);
+
+            svg3.append("circle").attr({
+                cx: ran3,
+                cy: i * 12 + 100,
+                fill: "rgb(" + colorNum + "," + (255 - i * 12) + "," + i * 12 + ")",
+                r: 4
+            })
+            svg3.append("text").attr({
+                x: ran3 + 10,
+                y: i * 12 + 103,
+                stroke: "rgb(" + colorNum + "," + (255 - i * 12) + "," + i * 12 + ")",
+                "font-size": 11,
+            }).text(ran3);
+
+        }
+        points = points + " 0,360";
+        svg3.append("polyline").attr({
+            points: points,
+            stroke: "blue",
+            fill: "rgba(0,0,0,0)",
+        })
+
+    </script>
+
 </body>
 
 </html>

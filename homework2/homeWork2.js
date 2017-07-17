@@ -13,3 +13,19 @@ var launch = function launch() {
     d3.select('table div').text(lastRan);
     d3.select('table p').text(ran);
 }
+
+var D3Title = function D3Title(svg, title, x, y) {
+    svg.append("rect").attr({
+        x: x,
+        y: y,
+        width: 450,
+        height: 37,
+    });
+    svg.append("text").attr({
+        x: x + 225,
+        y: y + 25,
+        "font-size": "20px",
+        fill: "white",
+        "text-anchor": "middle",
+    }).text(title);
+}
