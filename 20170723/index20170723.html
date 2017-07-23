@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>20170722上課</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+    <script src="index20170723.js"></script>
+</head>
+
+<body>
+    <input type="button" value="新增" onClick="update(arr)">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+
+    <script>
+        /*把資料自動與視覺元素做綁定   若視覺元素過多則刪除  若過少 則補齊*/
+        //        var arr = [85, 60, 99, 49, 77, 82];
+        //        bind(arr);
+        //        render();
+
+
+        var arr = [85, 60, 99, 49, 77, 82];
+        var w = 900,
+            h = 600,
+            p = 100;
+        svg();
+        //        bind2(arr);
+        //        render2();
+
+
+        function svg() {
+            d3.select("body").append("svg").attr({
+                width: w,
+                height: h
+            });
+        }
+
+
+
+
+        bind3(arr);
+        render3();
+
+    </script>
+
+
+</body>
+
+</html>
