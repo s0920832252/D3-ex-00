@@ -37,12 +37,12 @@
 
         var bind = function bind(dataSet) {
             var selection = d3.select(".secondQuestion>#svg2").selectAll("g").data(dataSet);
-            selection.enter().append("g").attr("class", "se");
+            selection.enter().append("g").attr("class", "s");
             selection.exit().remove();
         }
 
         var render = function render() {
-            var selection = d3.selectAll(".se").append("text").attr({
+            var selection = d3.selectAll(".s").append("text").attr({
                 "font-size": "15 px",
                 x: 50,
                 y: function(d, i) {
@@ -61,9 +61,9 @@
         };
 
         var renderByP = function renderByP() {
-            var selection = d3.selectAll("p .se")
+            var selection = d3.selectAll(".se")
                 .text(function(d, i) {
-                    return "     " + (i + 1) + " : " + d;
+                    return (i + 1) + " : " + d;
                 });
         };
 
@@ -104,7 +104,7 @@
             //            d3.selectAll("g.bar2").selectAll("text").remove();
             var p = 20,
                 h = 280;
-            /*找到指定的圖形 取出其資料(找不到會去父層找)*/
+            /*找到指定的圖形 取出其資料(找不到會去父層找)  PS:放置在早就配置好的元素*/
             d3.selectAll('.graph>rect')
                 .attr({
                     x: function(d, i) {
@@ -218,7 +218,7 @@
 
         /*綁定資料arr與標籤p後 動態產生p標籤*/
         bindByP(arr);
-        //        renderByP();
+        renderByP();
 
 
         /*劃出id 為svg3的svg畫布*/

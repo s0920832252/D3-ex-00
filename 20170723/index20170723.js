@@ -117,7 +117,6 @@ var bind3 = function bind3(dataSet) {
     var selection = d3.select("body>svg").selectAll("g.bar1").data(dataSet);
     selection.enter().append("g").attr("class", "bar1");
     selection.exit().remove();
-
 }
 
 var render3 = function render3() {
