@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>D3.js_homeWork3</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <!--    <script src="homeWork3.js"></script>-->
+</head>
+
+<body>
+    <div>
+        <h1 class="title">第三次作業</h1>
+        <p> 學生 : 陳世承</p>
+    </div>
+
+    <hr>
+    <div class="firstQuestion">
+        <h2 class="title">例題1 : 引用資料和橫條圖</h2>
+    </div>
+    <hr>
+    <div class="secondQuestion">
+        <h2 class="title">例題2 : binding by number</h2>
+    </div>
+    <hr>
+    <div class="thirdQuestion">
+        <h2 class="title">例題3 : dynamic figure</h2>
+        <input type="button" value="新增" onClick="update(arr)">
+        <input type="button" value="移除" onClick="pop()">
+    </div>
+
+
+
+    <script>
+        var w = 500,
+            h = 300;
+
+        var bind = function bind(dataSet) {
+            var selection = d3.select(".secondQuestion>#svg2").selectAll("g").data(dataSet);
+            selection.enter().append("g").attr("class", "se");
+            selection.exit().remove();
+        }
+
+        var render = function render() {
+            var selection = d3.selectAll(".se").append("text").attr({
+                "font-size": "15 px",
+                x: 50,
+                y: function(d, i) {
+                    return 50 * (i + 1);
+                },
+            }).text(function(d, i) {
+                return (i + 1) + " : " + d;
+            });
+        };
+
+        var bindByP = function bindByP(dataSet) {
+            var selection = d3.select(".secondQuestion").selectAll("p").data(dataSet);
+            selection.enter().append("p").attr("class", "se");
+            selection.exit().remove();
+
+        };
+
+        var renderByP = function renderByP() {
+            var selection = d3.selectAll("p .se")
+                .text(function(d, i) {
+                    return "     " + (i + 1) + " : " + d;
+                });
+        };
+
+        var pop = function pop() {
+            arr.pop();
+            bindForGraph(arr);
+            renderForGraph();
+        };
+
+        function update(arr) {
+            var num = Math.floor(Math.random() * (100 - 10 + 1) + 10);
+            //                    console.log(num);
+            arr.push(num);
+            bindForGraph(arr);
+            renderForGraph();
+        };
+
+
+
+        var bindForGraph = function bindForGraph(dataSet) {
+            /*step1  綁定資料dataSet與group g標籤*/
+            var selection = d3.select(".thirdQuestion>#svg3").selectAll("g").data(dataSet);
+
+            /*step2  動態新增g標籤(類別名稱為graph)
+            然後在g之下 附加 g的成員 rect以及text
+            */
+            var warp = selection.enter().append('g').attr("class", "graph");
+            warp.append("rect");
+            warp.append("text");
+            /*step3  動態刪除g*/
+            selection.exit().remove();
+        }
+
+        /*將綁定的資料依據匿名函數取出*/
+        var renderForGraph = function renderForGraph() {
+            //                同學的作法,每次畫圖前 均先把圖刪除掉 在開始畫
+            //            d3.selectAll("g.bar2").selectAll("rect").remove();
+            //            d3.selectAll("g.bar2").selectAll("text").remove();
+            var p = 20,
+                h = 280;
+            /*找到指定的圖形 取出其資料(找不到會去父層找)*/
+            d3.selectAll('.graph>rect')
+                .attr({
+                    x: function(d, i) {
+                        return p + 42 * i;
+                    },
+                    y: function(d) {
+                        return h - p - d;
+                    },
+                    width: 40,
+                    height: function(d) {
+                        return d;
+                    },
+                    fill: function(d) {
+                        if (d < 70) {
+                            return "red";
+                        } else {
+                            return "lightgreen";
+                        }
+                    }
+                })
+
+            d3.selectAll(".graph>text").attr({
+                x: function(d, i) {
+                    return i * 42 + p + 10;
+                },
+                y: function(d) {
+                    return h - p + 16;
+                },
+                "text-anchor": "right",
+                "font-size": "15px",
+            }).text(function(d) {
+                return d;
+            });
+        };
+
+        var random = function random(N, M) {
+            return Math.floor(Math.random() * (M - N + 1) + N);
+        };
+
+    </script>
+    <script>
+        var DataSetName = "invoice-taipei.json";
+        /*d3.json取出json資料並使用匿名函數jsonWork做出動作*/
+        d = d3.json(DataSetName, function jsonWork(DataSet) {
+            var body = d3.select("body>.firstQuestion");
+            /*將過濾後資料放在fDataSet*/
+            var fDataSet = DataSet.filter(function(DataSet) {
+                return (DataSet.date).indexOf("2016/8/") != -1 && DataSet.city === "臺北市" && DataSet.amount > 1000000000;
+            });
+
+            /*劃出寬900 高600的svg畫布*/
+            var w = 900,
+                h = 600;
+            body.append("svg").attr({
+                width: w,
+                height: h,
+                id: "svg1",
+            });
+
+            /*使用D3選取id=svg1的畫布並在其上附加文字(位置(600,30) 大小20px 靠右對其 )*/
+            d3.select("#svg1").append("text").attr({
+                x: 600,
+                y: 30,
+                "font-size": "20px",
+                "text-anchor": "right",
+            }).text("( 單位使用: 億 ,四捨五入)");
+
+            /*將資料依順序讀出, 並依據資料畫橫長條圖
+            應該也可以使用問題三 綁定的做法  將資料綁訂在 svg圖片上(在上面用群組)的方式  在使用匿名函數的方式取出綁定的資料
+            */
+            for (var i = 0; i < fDataSet.length; i++) {
+                var amounts = Math.round(fDataSet[i].amount / 100000000);
+                d3.select("#svg1").append("text").attr({
+                    x: 30,
+                    y: 70 + 50 * i,
+                    "font-size": "20px",
+                    //                    fill:"white",
+                    "text-anchor": "left",
+                }).text(fDataSet[i].industry);
+                d3.select("#svg1").append("rect").attr({
+                    x: 350,
+                    y: 55 + 50 * i,
+                    width: amounts,
+                    height: 20,
+                    fill: "red",
+                })
+                d3.select("#svg1").append("text").attr({
+                    x: 350 + amounts + 5,
+                    y: 70 + 50 * i,
+                    "font-size": "15px",
+                    //                    fill:"white",
+                    "text-anchor": "left",
+                    "stroke": "rgba(90,50,180,1)",
+                }).text(amounts + "億");
+            };
+        });
+
+
+        /*劃出id 為svg2的svg畫布*/
+        var arr = [85, 60, 99, 49, 77, 82];
+        var body = d3.select("body>.secondQuestion");
+        body.append("svg").attr({
+            width: w,
+            height: h,
+            id: "svg2",
+        });
+        /*綁定資料arr與畫布svg2 並產生g(以及文字)
+         */
+        bind(arr);
+        render();
+
+        /*綁定資料arr與標籤p後 動態產生p標籤*/
+        bindByP(arr);
+        //        renderByP();
+
+
+        /*劃出id 為svg3的svg畫布*/
+        var w = 1400,
+            h = 300;
+        var body = d3.select("body>.thirdQuestion");
+        body.append("svg").attr({
+            width: w,
+            height: h,
+            id: "svg3",
+        });
+
+        /*初始化更新資料*/
+        update(arr);
+
+    </script>
+
+
+
+</body>
+
+</html>

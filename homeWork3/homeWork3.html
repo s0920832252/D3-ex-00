@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>D3.js_homeWork3</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="homeWork3.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1 class="title">第三次作業</h1>
+        <p> 學生 : 陳世承</p>
+    </div>
+
+    <hr>
+    <div class="firstQuestion">
+        <h2 class="title">例題1 : 引用資料和橫條圖</h2>
+    </div>
+    <hr>
+    <div class="secondQuestion">
+        <h2 class="title">例題2 : binding by number</h2>
+    </div>
+    <hr>
+    <div class="thirdQuestion">
+        <h2 class="title">例題3 : dynamic figure</h2>
+        <input type="button" value="新增" onClick="update(arr)">
+        <input type="button" value="移除" onClick="pop()">
+    </div>
+
+
+
+
+    <script>
+        var DataSetName = "invoice-taipei.json";
+        d = d3.json(DataSetName, function jsonWork(DataSet) {
+            var body = d3.select("body>.firstQuestion");
+            var fDataSet = DataSet.filter(function(DataSet) {
+                return (DataSet.date).indexOf("2016/8/") != -1 && DataSet.city === "臺北市" && DataSet.amount > 1000000000;
+            });
+
+            var w = 900,
+                h = 600;
+            body.append("svg").attr({
+                width: w,
+                height: h,
+                id: "svg1",
+            });
+            d3.select("#svg1").append("text").attr({
+                x: 600,
+                y: 30,
+                "font-size": "20px",
+                "text-anchor": "right",
+            }).text("( 單位使用: 億 ,四捨五入)");
+            for (var i = 0; i < fDataSet.length; i++) {
+                var amounts = Math.round(fDataSet[i].amount / 100000000);
+                d3.select("#svg1").append("text").attr({
+                    x: 30,
+                    y: 70 + 50 * i,
+                    "font-size": "20px",
+                    //                    fill:"white",
+                    "text-anchor": "left",
+                }).text(fDataSet[i].industry);
+                d3.select("#svg1").append("rect").attr({
+                    x: 350,
+                    y: 55 + 50 * i,
+                    width: amounts,
+                    height: 20,
+                    fill: "red",
+                })
+                d3.select("#svg1").append("text").attr({
+                    x: 350 + amounts + 5,
+                    y: 70 + 50 * i,
+                    "font-size": "15px",
+                    //                    fill:"white",
+                    "text-anchor": "left",
+                    "stroke": "rgba(90,50,180,1)",
+                }).text(amounts + "億");
+            };
+        });
+
+
+        var arr = [85, 60, 99, 49, 77, 82];
+        var w = 500,
+            h = 300;
+        var body = d3.select("body>.secondQuestion");
+        body.append("svg").attr({
+            width: w,
+            height: h,
+            id: "svg2",
+        });
+        bind(arr);
+        render();
+
+        bindByP(arr);
+        //        renderByP();
+
+
+        var w = 500,
+            h = 300;
+        var body = d3.select("body>.thirdQuestion");
+        body.append("svg").attr({
+            width: w,
+            height: h,
+            id: "svg3",
+        });
+
+        update(arr);
+
+        function pop() {
+            arr.pop();
+            bindForGraph(arr);
+            renderForGraph();
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>
