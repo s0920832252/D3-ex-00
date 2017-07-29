@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <svg width="800" height="300"></svg>
+
+    <script>
+        var dataSet = [{
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "不動產開發業",
+            "platform": "無載具",
+            "number": 1530691,
+            "amount": 2081432419
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "批發業",
+            "platform": "無載具",
+            "number": 4142289,
+            "amount": 5565063958
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "資料處理及資訊供應服務業",
+            "platform": "無載具",
+            "number": 780708,
+            "amount": 1359622827
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "零售業",
+            "platform": "無載具",
+            "number": 64927420,
+            "amount": 19680973217
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "電信業",
+            "platform": "無載具",
+            "number": 225300,
+            "amount": 2302012551
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "餐飲業",
+            "platform": "無載具",
+            "number": 9855745,
+            "amount": 5193141219
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "影片服務、聲音錄製及音樂出版業",
+            "platform": "使用載具",
+            "number": 1518980,
+            "amount": 2606453896
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "資料處理及資訊供應服務業",
+            "platform": "使用載具",
+            "number": 3936592,
+            "amount": 2441866930
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "零售業",
+            "platform": "使用載具",
+            "number": 9675319,
+            "amount": 4693713798
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "電信業",
+            "platform": "使用載具",
+            "number": 15939352,
+            "amount": 15982550394
+        }, {
+            "date": "2016/8/1",
+            "city": "臺北市",
+            "cid": "A",
+            "industry": "電力及燃氣供應業",
+            "platform": "使用載具",
+            "number": 688044,
+            "amount": 6096595655
+        }];
+
+        bind(dataSet);
+        render();
+
+    </script>
+</body>
+
+</html>
