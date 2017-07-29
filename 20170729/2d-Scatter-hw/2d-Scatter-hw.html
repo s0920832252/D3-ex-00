@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <style>
+        body {
+            background: #eee;
+        }
+        
+        .axis path,
+        line {
+            fill: none;
+            stroke: black;
+        }
+        
+        .axis text {
+            font-size: 12px;
+            fill: blue;
+        }
+
+    </style>
+</head>
+
+<body>
+    <script>
+        // 1. 定義width, height, padding, letterList變數
+        var w = 900;
+        var h = 600;
+        var padding = 60;
+        var letterList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "M", "N", "O", "P", "Q", "T", "U", "V", "W", "X", "Z"];
+
+        //2. 建立svg()畫布環境
+
+        svg();
+
+        //3. 用d3讀取csv
+        d3.csv("invoice.csv", mid, function(dataSet) {
+            console.log(dataSet);
+            bind(dataSet);
+            render(dataSet);
+
+        });
+
+        function mid(d) {
+            d.amount = +d.amount;
+            d.number = +d.number;
+            return d;
+        }
+
+
+        function svg() {
+            d3.select("body").append("svg").attr({
+                width: w,
+                height: h
+            });
+            d3.select("svg").append("g").append("rect").attr({
+                width: "100%",
+                height: "100%",
+                fill: "white"
+            });
+        }
+
+        //4. 建立bind()
+
+        function bind(dataSet) {
+            var selection = d3.select("svg")
+                .selectAll("circle")
+                .data(dataSet);
+
+            selection.enter().append("circle");
+            selection.exit().remove();
+        }
+
+        function render(dataSet) {
+            //5. 定義xScale,yScale,rScale, fScale比例尺(range目的在決定在svg上位置)
+
+            var xScale = d3.time.scale()
+                .domain([new Date("2013/1/1"), new Date("2016/8/1")])
+                .range([padding, w - padding]);
+            var yScale = d3.scale.linear()
+                .domain([d3.min(dataSet, function(d) {
+                    return d.number;
+                }), d3.max(dataSet, function(d) {
+                    return d.number;
+                })])
+                .range([h - padding, padding]);
+            var rScale = d3.scale.linear()
+                .domain([d3.min(dataSet, function(d) {
+                    return d.amount;
+                }), d3.max(dataSet, function(d) {
+                    return d.amount;
+                })])
+                .range([5, 30]);
+ var fScale = d3.scale.category20();
+
+            var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+            var yAxis = d3.svg.axis().scale(yScale).orient("left").tickFormat(function(d) {
+                return d / 1000000 + "M";
+            });
+
+            //6. 建立render()繪圖
+            d3.selectAll("circle")
+                .attr({
+                    cx: function(d) {
+                        return xScale(new Date(d.date));
+                    },
+                    cy: function(d) {
+                        return yScale(d.number);
+                    },
+                    r: function(d) {
+                        return rScale(d.amount);
+                    },
+                    fill: function(d) {
+                        return fScale(d.cid);
+                    }
+                });
+
+            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxis);
+            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(" + (padding - 12) + ",0)").call(yAxis);
+
+        }
+
+    </script>
+
+</body>
+
+</html>
