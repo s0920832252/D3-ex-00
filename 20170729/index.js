@@ -1,5 +1,4 @@
-bind(dataSet);
-render();
+
 
 function bind(dataSet) {
     var selection = d3.select("svg")

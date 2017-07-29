@@ -10,16 +10,22 @@
             background: #eee;
         }
         
+        ;
+        /*設定座標軸的外觀*/
+        
         .axis path,
         line {
             fill: none;
             stroke: black;
         }
         
+        ;
         .axis text {
             font-size: 12px;
             fill: blue;
         }
+        
+        ;
 
     </style>
 </head>
@@ -38,12 +44,13 @@
 
         //3. 用d3讀取csv
         d3.csv("invoice.csv", mid, function(dataSet) {
-            console.log(dataSet);
+            //            console.log(dataSet);
             bind(dataSet);
             render(dataSet);
-
+            btnList(dataSet);
         });
 
+        /*處理字串資料為數字*/
         function mid(d) {
             d.amount = +d.amount;
             d.number = +d.number;
@@ -75,7 +82,7 @@
         }
 
         function render(dataSet) {
-            //5. 定義xScale,yScale,rScale, fScale比例尺(range目的在決定在svg上位置)
+            //5. 定義xScale,yScale,rScale, fScale比例尺(range目的在決定在svg上位置)           
 
             var xScale = d3.time.scale()
                 .domain([new Date("2013/1/1"), new Date("2016/8/1")])
@@ -94,7 +101,7 @@
                     return d.amount;
                 })])
                 .range([5, 30]);
- var fScale = d3.scale.category20();
+            var fScale = d3.scale.category20();
 
             var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
             var yAxis = d3.svg.axis().scale(yScale).orient("left").tickFormat(function(d) {
@@ -118,9 +125,65 @@
                     }
                 });
 
+            /*用建立好的比例尺去建立尺規*/
             d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxis);
             d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(" + (padding - 12) + ",0)").call(yAxis);
 
+        }
+
+        var btnList = function btnList(dataSet) {
+            var iDataSet = dataSet.map(function(d) {
+                return d.industry;
+            });
+            var uDataSet = unique(iDataSet);
+
+            var fDataSet = uDataSet.filter(function(d) {
+                return (d != "");
+            })
+            //            console.log(fDataSet);
+            var selection = d3.select("body").selectAll("input").data(fDataSet);
+
+            selection.enter().append("input").attr({
+                type: "button"
+            });
+            selection.exit().remove();
+
+            /*用on將元素和事件綁定在一起  此處設定成點擊事件*/
+            d3.selectAll("input[type='button']").attr({
+                value: function(d) {
+                    return d;
+                }
+            }).on("click", function(d) {
+                //                console.log(d);
+                update(d);
+            });
+
+
+            var update = function update(industryName) {
+                var newDataSet = dataSet.filter(function(d) {
+                    return d.industry === industryName;
+                });
+                bind(newDataSet);
+                render(newDataSet);
+            }
+
+        }
+
+        var unique = function unique(array) {
+            var n = [];
+
+            //去看array中每個元素，如果沒出現過就加到n中  
+            //   for(var i=0;i<array.length;i++){
+
+            //   }
+
+            array.forEach(function(d) {
+                if (n.indexOf(d) === -1) {
+                    n.push(d);
+                }
+            });
+
+            return n;
         }
 
     </script>
