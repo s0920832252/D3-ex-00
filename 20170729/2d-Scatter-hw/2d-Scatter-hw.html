@@ -9,23 +9,18 @@
         body {
             background: #eee;
         }
-        
-        ;
         /*設定座標軸的外觀*/
         
-        .axis path,
-        line {
-            fill: none;
-            stroke: black;
-        }
-        
-        ;
         .axis text {
-            font-size: 12px;
+            font-size: 10px;
             fill: blue;
         }
         
-        ;
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+        }
 
     </style>
 </head>
@@ -79,6 +74,20 @@
 
             selection.enter().append("circle");
             selection.exit().remove();
+
+            d3.select("svg").selectAll(".axis").remove();
+            d3.select("svg").append("g").attr({
+                "class": "axis",
+                "id": "xAxis"
+            }).attr("transform", "translate(0," + (h - padding) + ")");
+            d3.select("svg").append("g").attr({
+                "class": "axis",
+                "id": "yAxis"
+            }).attr("transform", "translate(" + (padding - 12) + ",0)");
+
+
+
+
         }
 
         function render(dataSet) {
@@ -126,8 +135,12 @@
                 });
 
             /*用建立好的比例尺去建立尺規*/
-            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxis);
-            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(" + (padding - 12) + ",0)").call(yAxis);
+            //            d3.select("svg").selectAll(".axis").remove();
+            //            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxis);
+            //            d3.select("svg").append("g").attr("class", "axis").attr("transform", "translate(" + (padding - 12) + ",0)").call(yAxis);
+
+            d3.select("svg").selectAll("#xAxis").call(xAxis);
+            d3.select("svg").selectAll("#yAxis").call(yAxis);
 
         }
 
