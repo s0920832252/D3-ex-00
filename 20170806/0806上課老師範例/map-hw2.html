@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="topojson.min.js"></script>
+    <style>
+        .map-boundary {
+          stroke: #eee;
+        }
+    </style>
+</head>
+<body>
+    <svg width="1200" height="700"></svg>
+    
+    <script>
+        //1.地理資料檔: GeoJSON or TopoJSON
+        d3.json("tw_topo.json", function(mapDataSet) {
+            
+//            console.log(mapDataSet);
+                
+            bind(mapDataSet);
+            render();      
+
+        });     
+        
+        function render(){
+            //從這裡開始修改
+            var fScale = d3.scale.category20();
+            var tmp_color;
+            
+            d3.selectAll("path")
+            .attr({
+                fill: function(d,i){
+                    return fScale(i);
+                }
+            })
+        }
+        function bind(topoRoot){
+            
+            // 2.地理投影器: 設定投影方式(麥卡托)、定位點([經度,緯度])、縮放(scale)
+            var projection = d3.geo.mercator().center([121,24]).scale(8000);    
+            
+            // 3.路徑產生器: d3.geo.path()
+            var path = d3.geo.path().projection(projection);
+            
+            
+            console.log(topoRoot);
+//            // 4.地理資料檔: 使用topojson.js載入地理資料
+            var geoRoot = topojson.feature(topoRoot, topoRoot.objects["COUNTY_MOI_1060525"]);
+                
+             console.log(geoRoot)
+            // 綁定path與載入的地理資料(features:每一地理區劃)
+            var selection = d3.select("svg").selectAll("path").data(geoRoot.features);
+              
+            selection.enter().append("path").classed("map-boundary", true).attr("d", path);
+            selection.exit().remove();
+            
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

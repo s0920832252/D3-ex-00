@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+        <style>
+
+        html, body, #map {
+          width: 99%;
+          height: 90%;
+          margin: 0;
+          padding: 0;
+        }
+
+        .stations, .stations svg {
+          position: absolute;
+        }
+
+        .stations svg {
+          width: 60px;
+          height: 20px;
+          padding-right: 100px;
+          font: 10px sans-serif;
+        }
+
+        .stations circle {
+          fill: gold;
+          stroke: black;
+          stroke-width: 1.5px;
+        }
+        
+
+        </style>
+        <!-- Google Map API ----->
+        <script src="//maps.google.com/maps/api/js?key=AIzaSyA4DWFYsBj7VkaclmNCoaHTYAJcPEdyd0o&sensor=true"></script>
+        <script src="//d3js.org/d3.v3.min.js"></script>
+        
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+
+            // 產生 Google Map…
+            var map = new google.maps.Map(d3.select("#map").node(), {
+              zoom: 8,
+              center: new google.maps.LatLng(25.143271,121.548725),
+              mapTypeId: google.maps.MapTypeId.TERRAIN
+            });
+
+            // 讀取外部資料，讀完後建立一個overlay
+            
+            d3.csv("taipei-toilets.csv", function(dataSet) {
+              
+              //console.table(data);
+            
+              var overlay = new google.maps.OverlayView();
+  
+              // 當overlay加入後，增加一個分層layer
+                
+              overlay.onAdd = function() {
+                var layer = d3.select(this.getPanes().overlayMouseTarget).append("div")
+                    .attr("class", "stations");
+
+                // 畫出獨立的每一個資料點
+                overlay.draw = function() {
+                  var projection = this.getProjection(),
+                      padding = 10;
+
+                  var marker = layer.selectAll("svg")
+                      .data(d3.entries(dataSet))
+                      .each(transform)
+                    .enter().append("svg")
+                      .each(transform)
+                      .attr("class", "marker");
+
+                  // 增加圓點，並打開滑鼠事件，讓文字在滑鼠移入時出現
+                  marker.append("circle")
+                      .attr("r", 7)
+                      .attr("cx", padding)
+                      .attr("cy", padding)
+                      .on("mouseover",function(d){
+                          d3.select(this.parentNode).select("text").attr({
+                             opacity: 1
+                          });
+                      })
+                      .on("mouseout",function(d){
+                           d3.select(this.parentNode).select("text").attr({
+                             opacity: 0
+                          });
+                      });
+
+                  // 增加文字說明
+//                  marker.append("text")
+//                      .attr({
+//                          x:padding + 20,
+//                          y: padding,
+//                          "font-size": "13px",
+//                          opacity: 0
+//                      })     
+//                      .text(function(d) { return ???; })
+                      
+
+                  function transform(d) {
+//                      console.log(d);
+                    d = new google.maps.LatLng(d.value.lat,d.value.lng);
+                      
+                    d = projection.fromLatLngToDivPixel(d);
+                      
+                    return d3.select(this)
+                        .style("left", (d.x - padding) + "px")
+                        .style("top", (d.y - padding) + "px");
+                  }
+                };
+              };
+
+              // 綁定overlay到地圖中
+              overlay.setMap(map);
+            });
+
+            </script>
+    </body>
+</html>
+
