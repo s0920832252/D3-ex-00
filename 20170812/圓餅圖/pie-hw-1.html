@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <style>
+        body{
+            background: #eee;
+        }
+        g.arc text{
+            fill: white;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var w = 900;
+        var h = 600;
+        var padding = 90;
+        
+        svg();       
+    
+        d3.csv("cancer_data.csv", row, function(dataSet){
+            
+            
+            
+           //TODO-找出符合2013年國人(台閩地區)癌症發生前6名???
+           var fDataSet=dataSet.filter(function(d){
+               return d["癌症診斷年"]=="2013" && d["縣市別"]=="台閩地區" && d["癌症別"]!="全癌症";
+           })
+           var sorted_dataSet = fDataSet.sort(function(a, b){
+                return d3.descending(a.crude_rate, b.crude_rate);
+            });
+           sorted_dataSet.length=6;
+           
+             
+           bind(sorted_dataSet);
+           render(sorted_dataSet);
+//           listItems(dataSet);
+        });
+        function row(d){
+            
+            d.incidence = +d.incidence;
+            d.count     = +d.count;
+            d.avg_age   = +d.avg_age;
+            d.crude_rate= +d.crude_rate;
+            
+            return d;
+        }
+        
+        function svg(){
+            d3.select("body").append("svg").attr({
+                width: w,
+                height: h
+            });
+            d3.select("svg").append("g").append("rect").attr({
+                width: "100%",
+                height: "100%",
+                fill: "white"
+            });
+           
+        }
+        
+        function bind(dataSet){
+            
+            var pie = d3.layout.pie()
+                        .value(function(d){return d.crude_rate});
+
+            var selection = d3.select("svg")
+                                .selectAll("g.arc")
+                                .data(pie(dataSet));
+            
+            console.log(pie(dataSet));
+
+            var g_arc = selection.enter().append("g").attr("class","arc");
+            g_arc.append("path");
+            g_arc.append("text");
+            selection.exit().remove();
+        }
+        function render(dataSet){
+            var outerR = 300;
+            var innerR = 10;
+            var arc = d3.svg.arc()    //畫出扇形
+                        .outerRadius(outerR)
+                        .innerRadius(innerR);
+//            console.log(arc);
+            
+            var fScale = d3.scale.category20();
+            
+            d3.selectAll("g.arc")
+              .attr("transform","translate("+(w/2)+","+(h/2)+")")  //移動位置
+              .select("path")
+              .attr("d", arc)
+              .style("fill", function(d,i) { return fScale(i); });
+            
+            d3.selectAll("g.arc")
+              .select("text")
+              .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })  //arc.centroid 計算並回傳此元素中心位置(重心)
+              .attr("text-anchor","middle")
+              .text(function(d){
+                return d.data["癌症別"];    
+            })
+            
+        }
+        function listItems(dataSet){
+                       
+            //TODO-如何產生年份按鈕???
+            var cityArr = [];
+            
+            var uniqueIndustryArr = unique(cityArr);
+            var filterIndustryArr = uniqueIndustryArr.filter(function(d){
+               return d!=""; 
+            });
+                
+            var selection = d3.select("body")
+                .append("div")
+                .attr("id", "city")
+                .selectAll("input")
+                .data(filterIndustryArr)
+                .attr({
+                    type: "button",
+                    value: function(d){
+                        return d;
+                    }
+                });
+            selection.enter()
+                .append("input")
+                .attr({
+                    type: "button",
+                    value: function(d){
+                        return d;
+                    }
+                })
+                .on("click",function(d){
+                        update(d);
+                });
+            function update(filteredName){
+                //TODO-找出符合2013年國人(台閩地區)癌症前6名???
+                var sorted_dataSet = [];
+                
+                bind(sorted_dataSet);
+                render(sorted_dataSet);
+            }
+            
+        }
+        function unique(array){
+          var n = []; 
+          for(var i = 0; i < array.length; i++){
+            if (n.indexOf(array[i]) == -1){
+                n.push(array[i]);
+            }
+          }
+          return n;
+        }
+    </script>
+
+</body>
+</html>

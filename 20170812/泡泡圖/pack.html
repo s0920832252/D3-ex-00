@@ -1,0 +1,188 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>D3 Layout-Pack</title>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <style>
+        body{
+            background: #eee;
+        }
+        g.arc text{
+            fill: white;
+        }
+        #tooltip{
+          position: absolute;
+          left: 20px; 
+          top:  100px; 
+          background: #fff;
+          width: 150px;
+          height: auto;
+          padding: 0px 10px;
+          border-radius: 5px;
+          box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+        }
+        #tooltip.hidden{
+          display: none;
+        } 
+    </style>
+</head>
+<body>
+   <div id="tooltip" class="hidden">
+      <p><strong id="title">Hello</strong></p>
+      <p id="content">tooltip</p>
+    </div>
+    <script>
+        var w = 1200;
+        var h = 800;
+        var p = 10;
+        
+        svg();       
+    
+        d3.csv("cancer_data.csv", row, function(dataSet){
+            
+           bind(dataSet);
+           render();
+           
+        });
+        function row(d){
+            
+            d.incidence = +d.incidence;
+            d.count     = +d.count;
+            d.avg_age   = +d.avg_age;
+            d.crude_rate= +d.crude_rate;
+            //TODO-4.自行產生欄位
+            d.value=d.count;
+            return d;
+        }
+        
+        function svg(){
+            d3.select("body").append("svg").attr({
+                width: w,
+                height: h
+            });
+            d3.select("svg").append("g").append("rect").attr({
+                width: "100%",
+                height: "100%",
+                fill: "white"
+            });
+           
+        }
+        
+        function bind(dataSet){
+            
+            //TODO-1.過濾出2013年各縣市(不含台閩地區)各癌症統計(不含全癌症統計)
+            var fDataSet=dataSet.filter(function(d){
+               return d.date==="2013" && d.city!="台閩地區" && d.catagory!="全癌症";
+            })
+            
+            //TODO-2.先依縣市，再依癌症類別劃分
+            var nested_dataSet = d3.nest()
+                                   .key(function(d){
+                                       return d.city;
+                                   })
+                                   .key(function(d){
+                                       return d.catagory;
+                                   })    
+                                   .entries(fDataSet);
+            
+                console.log(nested_dataSet);
+            
+            var root = {values: nested_dataSet};
+            
+                console.log(root);
+            
+            var packed_dataSet = d3.layout.pack()
+                        .size([w,h])
+                        .padding(p)
+                        //TODO-6.依大小排序，目標:大排到小
+                        .sort(function(a,b){
+                            return d3.descending(a.value,b.value);
+                        })
+                        .children(
+                            //TODO-3.指定子結點<問>要回傳什麼?
+                            function(d){
+                                return d.values;
+                            }
+                        )
+                        .nodes(root);
+            
+            console.log(packed_dataSet);
+            
+            //TODO-7.如何把最外的大圓去掉？
+            packed_dataSet=packed_dataSet.filter(function(d){return d.depth>0;})
+            console.log(packed_dataSet);
+            
+            var selection = d3.select("svg")
+                                .selectAll("circle")
+                                .data(packed_dataSet);
+            selection.enter().append("circle");
+            selection.exit().remove();
+        }
+        function render(){
+            
+            var fScale = d3.scale.category20();
+            
+            d3.selectAll("circle")
+               .attr({
+                cx: function(d) { return d.x; }, // 用 x,y 當圓心
+                cy: function(d) { return d.y; },
+                r : function(d) { return d.r; }, // 用 r 當半徑
+                fill: function(d){
+                    if(d.depth>2){
+                         //TODO-5.依癌症別填不同色，需注意各節點具有欄位
+                        return fScale(d.catagory);
+                    }        
+                    else{
+                        return "#eee";
+                    }
+                },
+                stroke: "#666",       // 邊框畫深灰色
+              });
+            
+            d3.selectAll("circle")
+              .on("mouseover",function(d){
+                //console.log(d);
+                
+                var posX = d3.select(this).attr("cx");
+                var posY = d3.select(this).attr("cy");
+
+                var tooltip = d3.select("#tooltip")
+                                .style({
+                                    "left": (+posX+20)+"px",
+                                    "top": (+posY+20)+"px"
+                                });
+                 //TODO-8.完成的提示框：
+                 // 1.滑鼠在外圓時顯示縣市別及該縣市所有癌症累積案例數
+                 // 2.滑鼠在內圓時顯示癌症別及案例數
+                                
+                if(d.hasOwnProperty("key")){
+                    tooltip.select("#title").text(d.key);
+                    tooltip.select("#content").html("總案例數: "+d.value);
+                }
+                else{
+                    tooltip.select("#title").text(d.catagory);
+                    tooltip.select("#content").html("案例數: "+d.value);
+                }
+                
+                tooltip.classed("hidden", false);
+                
+                d3.select(this).attr({
+                    "stroke-width": 5
+                });
+            })
+            .on("mouseout",function(d){
+                d3.select("#tooltip").classed("hidden", true);
+                d3.select(this).attr({
+                    "stroke-width": 1
+                });
+            });
+            
+        }
+    </script>
+
+</body>
+</html>
+pack-hw.html
+使用「Google 文件」開啟
